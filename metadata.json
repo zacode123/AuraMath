@@ -1,0 +1,6 @@
+{
+  "name": "AuraMath",
+  "description": "An elite mental mathematics training, testing, and competitive platform featuring glassmorphic designs, fluid dynamic wave physics, and real-time split-screen duels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
