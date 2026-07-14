@@ -1,4 +1,4 @@
-name: Build AuraMath apk release.
+name: Build Aura-Math apk release.
 
 on:
   push:
