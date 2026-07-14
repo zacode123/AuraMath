@@ -25,10 +25,32 @@ jobs:
         run: |
           echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
 
-      - name: Build Release APK
-        run: gradle assembleRelease --stacktrace
+      - name: Generate random signing credentials
+        run: |
+          echo "STORE_PASS=$(openssl rand -hex 32)" >> $GITHUB_ENV
+          echo "KEY_PASS=$(openssl rand -hex 32)" >> $GITHUB_ENV
+          echo "KEY_ALIAS=upload-$(openssl rand -hex 8)" >> $GITHUB_ENV
+
+      - name: Generate temporary keystore
+        run: |
+          keytool -genkeypair \
+          -v \
+          -keystore my-upload-key.jks \
+          -storepass "$STORE_PASS" \
+          -keypass "$KEY_PASS" \
+          -alias "$KEY_ALIAS" \
+          -keyalg RSA \
+          -keysize 4096 \
+          -validity 10000 \
+          -dname "CN=CI, OU=CI, O=AuraMath, L=None, ST=None, C=US"
+
+
+   #   - name: Build Release APK
+    #    run: gradle assembleRelease --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
-          name: app-release-apk
-          path: app/build/outputs/apk/release/app-release.apk
+      #    name: app-release-apk
+     #     path: app/build/outputs/apk/release/app-release.apk
+          name: my-upload-key.jks
+          path: my-upload-key.jks
