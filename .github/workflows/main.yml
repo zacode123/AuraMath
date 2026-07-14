@@ -37,7 +37,7 @@ jobs:
           -v \
           -keystore my-upload-key.jks \
           -storepass "$STORE_PASS" \
-          -keypass "$KEY_PASS" \
+          -keypass "$STORE_PASS" \
           -alias "$KEY_ALIAS" \
           -keyalg RSA \
           -keysize 4096 \
