@@ -25,11 +25,11 @@ android {
 
   signingConfigs {
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
-      storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD") ?: "auramath"
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD") ?: "auramath"
+      storeFile = file("my-upload-key.jks")
+      storeType = "PKCS12"
+      storePassword = System.getenv("STORE_PASS")
+      keyAlias = System.getenv("KEY_ALIAS")
+      keyPassword = System.getenv("STORE_PASS")
       isV1SigningEnabled = true
       isV2SigningEnabled = true
     }
