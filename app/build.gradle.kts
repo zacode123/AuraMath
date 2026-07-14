@@ -30,8 +30,6 @@ android {
       storePassword = System.getenv("STORE_PASS")
       keyAlias = System.getenv("KEY_ALIAS")
       keyPassword = System.getenv("STORE_PASS")
-      isV1SigningEnabled = true
-      isV2SigningEnabled = true
     }
     create("debugConfig") {
       storeFile = file("${rootDir}/debug.keystore")
