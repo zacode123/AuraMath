@@ -27,7 +27,7 @@ jobs:
 
       - name: Generate random signing credentials
         run: |
-          echo "STORE_PASS=$(openssl rand -hex 32)" >> $GITHUB_ENV
+          echo "STORE_PASS=aura-math-$(openssl rand -hex 32)" >> $GITHUB_ENV
           echo "KEY_ALIAS=upload-$(openssl rand -hex 8)" >> $GITHUB_ENV
 
       - name: Generate temporary keystore
