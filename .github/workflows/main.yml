@@ -14,6 +14,64 @@ jobs:
       KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
 
     steps:
+      - name: Create .env
+        run: |
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
+          
+    
+      - name: Patch build.gradle.kts
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          path = Path("app/build.gradle.kts")
+          text = path.read_text()
+
+          release_signing = '''
+          create("release") {
+            storeFile = file("../my-upload-key.jks")
+            storeType = "PKCS12"
+            storePassword = System.getenv("STORE_PASS")
+            keyAlias = System.getenv("KEY_ALIAS")
+            keyPassword = System.getenv("STORE_PASS")
+          }
+          '''
+
+          build_types = '''
+          buildTypes {
+            release {
+              isCrunchPngs = false
+              isMinifyEnabled = false
+              proguardFiles(
+                  getDefaultProguardFile("proguard-android-optimize.txt"),
+                  "proguard-rules.pro"
+              )
+              signingConfig = signingConfigs.getByName("release")
+            }
+            debug {}
+          }
+          '''
+
+          text = re.sub(
+            r'create\("release"\)\s*\{.*?\n\s*\}',
+            release_signing,
+            text,
+            count=1,
+            flags=re.S
+          )
+
+          text = re.sub(
+            r'buildTypes\s*\{.*?\n\s*\}',
+            build_types,
+            text,
+            count=1,
+            flags=re.S
+          )
+
+          path.write_text(text)
+          PY
+    
       - uses: actions/checkout@v4
 
       - uses: actions/setup-java@v4
@@ -24,10 +82,6 @@ jobs:
       - uses: android-actions/setup-android@v3
 
       - uses: gradle/actions/setup-gradle@v4
-
-      - name: Create .env
-        run: |
-          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
 
       - name: Build Release APK
         run: gradle assembleRelease --stacktrace
